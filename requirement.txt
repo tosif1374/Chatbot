@@ -1,0 +1,56 @@
+# Core LangChain (new modular packages)
+langchain>=0.2.1
+langchain-community>=0.2.1
+langchain-ollama>=0.1.0
+
+# PDF loading
+pypdf>=4.0.0
+
+# Vector database (fast, local)
+faiss-cpu>=1.7.4
+
+# Utilities
+tqdm>=4.66.0
+langchain
+python-dotenv
+ipykernel
+langchain_community
+pypdf
+bs4
+arxiv
+pymupdf
+wikipedia
+langchain-text-splitters
+langchain-openai
+chromadb
+sentence_transformers
+langchain_huggingface
+faiss-cpu
+langchain_chroma
+beautifulsoup4
+streamlit
+pandas
+openai
+duckdb
+langchain-groq
+streamlit 
+langchain 
+langchain-core 
+langchain-community 
+langchain-groq 
+langchain-text-splitters 
+faiss-cpu 
+python-dotenv
+langchain 
+langchain-core 
+langchain-community 
+langchain-groq 
+langchain-text-splitters 
+faiss-cpu 
+streamlit 
+pypdf 
+ollama
+
+
+
+
