@@ -5,7 +5,7 @@ from langchain_ollama import OllamaEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import FAISS
-from lanchain
+
 
 # ===============================
 # CONFIG
@@ -41,8 +41,7 @@ print(f"Total chunks: {len(docs)}")
 # EMBEDDINGS (GPU via Ollama)
 # ===============================
 embeddings = OllamaEmbeddings(
-    model="nomic-embed-text",
-    base_url="http://localhost:11434"
+    model="nomic-embed-text"
 )
 
 # ===============================
