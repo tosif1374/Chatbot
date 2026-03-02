@@ -1,68 +1,64 @@
 import os
+import shutil
 from tqdm import tqdm
 
-from langchain_ollama import OllamaEmbeddings
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+from RAG_with_TDS import clean_docs
 from langchain_community.document_loaders import PyPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_ollama import OllamaEmbeddings
 from langchain_community.vectorstores import FAISS
 
 
-# ===============================
-# CONFIG
-# ===============================
-PDF_PATH = "Machine-Learning-Systems.pdf"     #CHANGE THIS
 VECTOR_DB_PATH = "vector_db"
-BATCH_SIZE = 200                   # best for GPU
+PDF_PATH = "Machine-Learning-Systems.pdf"
+
 CHUNK_SIZE = 800
 CHUNK_OVERLAP = 100
+BATCH_SIZE = 200
 
-# ===============================
-# LOAD PDF
-# ===============================
-print(" Loading PDF...")
-loader = PyPDFLoader(PDF_PATH)
-documents = loader.load()
 
-print(f" Pages loaded: {len(documents)}")
+# delete old db
+if os.path.exists(VECTOR_DB_PATH):
+    shutil.rmtree(VECTOR_DB_PATH)
 
-# ===============================
-# SPLIT DOCUMENTS
-# ===============================
-print(" Splitting into chunks...")
-text_splitter = RecursiveCharacterTextSplitter(
+
+# load pdf
+pdf_loader = PyPDFLoader(PDF_PATH)
+pdf_docs = pdf_loader.load()
+
+
+# combine pdf + web docs
+all_docs = pdf_docs + clean_docs
+
+
+# split into chunks
+splitter = RecursiveCharacterTextSplitter(
     chunk_size=CHUNK_SIZE,
     chunk_overlap=CHUNK_OVERLAP
 )
 
-docs = text_splitter.split_documents(documents)
+docs = splitter.split_documents(all_docs)
+
 print(f"Total chunks: {len(docs)}")
 
-# ===============================
-# EMBEDDINGS (GPU via Ollama)
-# ===============================
-embeddings = OllamaEmbeddings(
-    model="nomic-embed-text"
-)
 
-# ===============================
-# BUILD VECTOR DB (BATCHED)
-# ===============================
-print(" Building vector database (ONE TIME)...")
+# embeddings
+embeddings = OllamaEmbeddings(model="nomic-embed-text")
 
+
+# build faiss
 vectorstore = None
 
 for i in tqdm(range(0, len(docs), BATCH_SIZE), desc="Embedding"):
-    batch_docs = docs[i:i + BATCH_SIZE]
+    
+    batch = docs[i:i+BATCH_SIZE]
 
     if vectorstore is None:
-        vectorstore = FAISS.from_documents(batch_docs, embeddings)
+        vectorstore = FAISS.from_documents(batch, embeddings)
     else:
-        vectorstore.add_documents(batch_docs)
+        vectorstore.add_documents(batch)
 
-# ===============================
-# SAVE VECTOR DB
-# ===============================
+
 vectorstore.save_local(VECTOR_DB_PATH)
 
-print(" DONE: Vector database saved successfully!")
-print(f" Location: {VECTOR_DB_PATH}")
+print("Vector DB created successfully")
