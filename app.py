@@ -15,11 +15,11 @@ query = st.text_input("Ask a question:")
 
 if query:
     with st.spinner("Thinking..."):
-        start_time = time.time()          # ⏱ start timer
+        start_time = time.time()          
         answer = tutor(query)
-        end_time = time.time()            # ⏱ end timer
+        end_time = time.time()            
 
-        latency = end_time - start_time   # seconds
+        latency = end_time - start_time   
 
         st.write(answer)
         st.markdown(

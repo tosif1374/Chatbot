@@ -8,7 +8,7 @@ def load_faiss_tutor(
     llm_model: str = "llama3",
     embed_model: str = "nomic-embed-text",
     k: int = 4,
-    temperature: float = 0.4,
+    temperature: float = 0.2,
 ):
     """
     Loads an already embedded FAISS vector DB
@@ -42,13 +42,14 @@ def load_faiss_tutor(
         context = "\n\n".join(doc.page_content for doc in docs)
 
         prompt = f"""
-You are an AI Tutor on an automated learning platform.
+You are an AI Learning Tutor specializing in Machine Learning, Deep Learning, NLP, and LLMs.
 
-Rules:
-- Use document context when relevant
-- If the context is incomplete, explain using general knowledge
-- Never refuse to answer due to missing context
-- Teach clearly and progressively
+STRICT RULES:
+1. If the user sends a greeting (hi, hello, hey, etc.), respond ONLY with a friendly welcome message. Do NOT explain any ML concept.
+2. If the question is unrelated to ML/DL/NLP/LLMs, politely say you only cover those topics.
+3. Never generate an answer if the question is vague or a greeting.
+4. Only answer questions clearly related to AI/ML topics.
+5. Do not hallucinate — if unsure, say "I don't know" rather than guessing.;
 
 Document Context:
 {context}
@@ -57,7 +58,7 @@ Question:
 {query}
 
 Answer structure:
-1. Direct answer
+1. In short
 2. Explanation
 3. Example (if helpful)
 4. Learning note (if beyond document)
